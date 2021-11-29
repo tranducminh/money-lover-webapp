@@ -1,39 +1,37 @@
 <template>
   <layout>
     <Header />
-    <n-space>
-      <n-layout has-sider>
-        <n-layout-sider
-          bordered
-          collapse-mode="width"
-          :collapsed-width="64"
-          :width="240"
+    <n-layout has-sider>
+      <n-layout-sider
+        bordered
+        collapse-mode="width"
+        :collapsed-width="64"
+        :width="240"
+        :collapsed="collapsed"
+        show-trigger
+        @collapse="collapsed = true"
+        @expand="collapsed = false"
+        v-if="isAuth"
+      >
+        <n-menu
           :collapsed="collapsed"
-          show-trigger
-          @collapse="collapsed = true"
-          @expand="collapsed = false"
-          v-if="isAuth"
-        >
-          <n-menu
-            :collapsed="collapsed"
-            :collapsed-width="64"
-            :collapsed-icon-size="23"
-            :options="menuOptions"
-            :render-label="renderMenuLabel"
-            :render-icon="renderMenuIcon"
-            :expand-icon="expandIcon"
-          />
-        </n-layout-sider>
-        <n-layout>
-          <slot></slot>
-        </n-layout>
+          :collapsed-width="64"
+          :collapsed-icon-size="23"
+          :options="menuOptions"
+          :render-label="renderMenuLabel"
+          :render-icon="renderMenuIcon"
+          :expand-icon="expandIcon"
+        />
+      </n-layout-sider>
+      <n-layout>
+        <slot></slot>
       </n-layout>
-    </n-space>
+    </n-layout>
   </layout>
 </template>
 <script lang="ts">
-import { h, ref, defineComponent, computed, onMounted } from "vue";
-import { NIcon, useMessage } from "naive-ui";
+import { h, ref, defineComponent, computed, onBeforeMount } from "vue";
+import { NIcon } from "naive-ui";
 import {
   BookmarkBorderFilled,
   AccountBalanceWalletOutlined,
@@ -43,10 +41,10 @@ import {
 import { CaretDownOutline } from "@vicons/ionicons5";
 import Header from "../components/Header.vue";
 import { useStore } from "vuex";
-import { Type } from "@/store/modules/message";
 import { RouterLink } from "vue-router";
 import router from "@/router";
 import Layout from "./Layout.vue";
+import { GET_ME } from "@/store/action-types";
 
 interface Option {
   label: string;
@@ -77,30 +75,6 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
-    const modal = useMessage();
-
-    store.watch(
-      (state) => state.message.id,
-      () => {
-        const message = store.state.message;
-        switch (message.type) {
-          case Type.ERROR:
-            modal.error(message.content);
-            break;
-          case Type.SUCCESS:
-            modal.success(message.content);
-            break;
-          case Type.INFO:
-            modal.info(message.content);
-            break;
-          case Type.WARNING:
-            modal.warning(message.content);
-            break;
-          default:
-            break;
-        }
-      }
-    );
 
     store.watch(
       (state) => state.auth.isAuth,
@@ -109,14 +83,15 @@ export default defineComponent({
       }
     );
 
-    onMounted(() => {
+    onBeforeMount(async () => {
+      await store.dispatch(GET_ME);
       if (!store.state.auth.isAuth) router.push("/login");
     });
 
     return {
       isAuth: computed(() => store.state.auth.isAuth),
       menuOptions,
-      collapsed: ref(true),
+      collapsed: ref(false),
       renderMenuLabel(option: any) {
         if ("href" in option) {
           return h(RouterLink, { to: option.href }, option.label);

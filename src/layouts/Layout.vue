@@ -1,8 +1,10 @@
 <template>
-  <slot></slot>
+  <div id="container">
+    <slot></slot>
+  </div>
 </template>
 <script lang="ts">
-import { Type } from "@/store/modules/message";
+import { MessageType } from "@/constants";
 import { useMessage } from "naive-ui";
 import { defineComponent } from "vue";
 import { useStore } from "vuex";
@@ -18,16 +20,16 @@ export default defineComponent({
       () => {
         const message = store.state.message;
         switch (message.type) {
-          case Type.ERROR:
+          case MessageType.ERROR:
             modal.error(message.content);
             break;
-          case Type.SUCCESS:
+          case MessageType.SUCCESS:
             modal.success(message.content);
             break;
-          case Type.INFO:
+          case MessageType.INFO:
             modal.info(message.content);
             break;
-          case Type.WARNING:
+          case MessageType.WARNING:
             modal.warning(message.content);
             break;
           default:
@@ -38,4 +40,8 @@ export default defineComponent({
   },
 });
 </script>
-<style lang=""></style>
+<style lang="css" scoped>
+#container {
+  height: 100vh;
+}
+</style>

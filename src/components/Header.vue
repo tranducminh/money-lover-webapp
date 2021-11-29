@@ -59,18 +59,24 @@ import {
 } from "@vicons/material";
 import { useStore } from "vuex";
 import router from "@/router";
+import { LOGOUT } from "@/store/action-types";
 
 export default defineComponent({
   setup() {
     const store = useStore();
 
+    const isAuth = computed(() => store.state.auth.isAuth);
+    const name = computed(() => store.state.auth.name);
+
+    const logout = () => {
+      store.dispatch(LOGOUT);
+      router.push("/login");
+    };
+
     return {
-      isAuth: computed(() => store.state.auth.isAuth),
-      name: computed(() => store.state.auth.name),
-      logout() {
-        store.dispatch("logout");
-        router.push("/login");
-      },
+      isAuth,
+      name,
+      logout,
     };
   },
 

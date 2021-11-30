@@ -59,9 +59,9 @@
   </un-auth-layout>
 </template>
 <script lang="ts">
-import router from "@/router";
 import UnAuthLayout from "@/layouts/UnAuthLayout.vue";
-import { defineComponent, onMounted, ref } from "vue";
+import { SIGNUP } from "@/store/action-types";
+import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 
 export default defineComponent({
@@ -76,17 +76,6 @@ export default defineComponent({
       password: "",
       passwordConfirmation: "",
     });
-
-    onMounted(() => {
-      if (store.state.auth.isAuth) router.push("/");
-    });
-
-    store.watch(
-      (state) => state.auth.isAuth,
-      (isAuth) => {
-        if (isAuth) router.push("/");
-      }
-    );
 
     return {
       formRef,
@@ -143,7 +132,7 @@ export default defineComponent({
       },
       handleSignup(e: any) {
         e.preventDefault();
-        store.dispatch("signup", data.value);
+        store.dispatch(SIGNUP, data.value);
       },
     };
   },

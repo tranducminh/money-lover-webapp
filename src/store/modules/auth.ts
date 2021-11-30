@@ -1,31 +1,36 @@
-import {
-  LOGIN_SUCCESS,
-  LOGOUT,
-  PUSH_MESSAGE,
-  SIGNUP_SUCCESS,
-} from "../mutation-types";
+import { LOGOUT_SUCCESS, PUSH_MESSAGE, AUTH_SUCCESS } from "../mutation-types";
 import axios from "@/utils/axios";
-import { Type } from "./message";
+import { Commit } from "vuex";
+import { GET_ME, LOGIN, LOGOUT, SIGNUP } from "../action-types";
+import { MessageType } from "@/constants";
 
-interface AuthState {
+export interface IAuthState {
   isAuth: boolean;
   name: string | null;
   id: number | null;
   email: string | null;
 }
 
-interface UserData {
+export const initialAuthState = {
+  isAuth: false,
+  name: null,
+  id: null,
+  email: null,
+};
+
+// <----payload---->
+interface IUserPayload {
   id: number;
   name: string;
   email: string;
 }
 
-interface LoginPayload {
+interface ILoginPayload {
   email: string;
   password: string;
 }
 
-interface SignupPayload {
+interface ISignupPayload {
   email: string;
   password: string;
   password_confirmation: string;
@@ -33,74 +38,91 @@ interface SignupPayload {
 }
 
 export const auth = {
-  state: (): AuthState => ({
-    isAuth: true,
-    name: null,
-    id: null,
-    email: null,
-  }),
+  state: (): IAuthState => initialAuthState,
   mutations: {
-    [LOGIN_SUCCESS](state: AuthState, _data: UserData): void {
+    [AUTH_SUCCESS](state: IAuthState, _data: IUserPayload): void {
       state.isAuth = true;
       state.name = _data.name;
       state.id = _data.id;
       state.email = _data.email;
     },
-    [SIGNUP_SUCCESS](state: AuthState, _data: UserData): void {
-      state.isAuth = true;
-      state.name = _data.name;
-      state.id = _data.id;
-      state.email = _data.email;
-    },
-    [LOGOUT](state: AuthState): void {
-      state.isAuth = false;
-      state.name = null;
-      state.email = null;
-      state.id = null;
+    [LOGOUT_SUCCESS](state: IAuthState): void {
+      state = { ...initialAuthState };
     },
   },
   actions: {
-    login(context: any, _data: LoginPayload): void {
-      axios
-        .post("/login", { ..._data })
-        .then((res) => {
-          context.commit(LOGIN_SUCCESS, res.data.data.user);
-          context.commit(PUSH_MESSAGE, {
-            type: Type.SUCCESS,
-            content: "Login successfully",
-          });
-          localStorage.setItem("token", res.data.data.token);
-        })
-        .catch((error) => {
-          const errorData = error.response.data;
-          context.commit(PUSH_MESSAGE, {
-            type: Type.ERROR,
-            content: errorData.data.message,
-          });
+    /**
+     * login function
+     * set token to the local storage
+     *
+     */
+    async [LOGIN](
+      { commit }: { commit: Commit },
+      payload: ILoginPayload
+    ): Promise<void> {
+      try {
+        const res = await axios.post("/login", { ...payload });
+        commit(AUTH_SUCCESS, res.data.data.user);
+        commit(PUSH_MESSAGE, {
+          type: MessageType.SUCCESS,
+          content: "Login successfully",
         });
-    },
-    signup(context: any, _data: SignupPayload): void {
-      axios
-        .post("/signup", { ..._data })
-        .then((res) => {
-          context.commit(SIGNUP_SUCCESS, res.data.data.user);
-          context.commit(PUSH_MESSAGE, {
-            type: Type.SUCCESS,
-            content: "Signup successfully",
-          });
-        })
-        .catch((error) => {
-          const errorData = error.response.data;
-          context.commit(PUSH_MESSAGE, {
-            type: Type.ERROR,
-            content: errorData.data.message,
-          });
+        localStorage.setItem("token", res.data.data.token);
+      } catch (error: any) {
+        const errorData = error.response.data;
+        commit(PUSH_MESSAGE, {
+          type: MessageType.ERROR,
+          content: errorData.data.message,
         });
+      }
     },
-    logout(context: any): void {
+
+    /**
+     * signup function
+     * set token to the local storage
+     *
+     */
+    async [SIGNUP](
+      { commit }: { commit: Commit },
+      payload: ISignupPayload
+    ): Promise<void> {
+      try {
+        const res = await axios.post("/signup", { ...payload });
+        commit(AUTH_SUCCESS, res.data.data.user);
+        commit(PUSH_MESSAGE, {
+          type: MessageType.SUCCESS,
+          content: "Signup successfully",
+        });
+      } catch (error: any) {
+        const errorData = error.response.data;
+        commit(PUSH_MESSAGE, {
+          type: MessageType.ERROR,
+          content: errorData.data.message,
+        });
+      }
+    },
+
+    /**
+     * logout function
+     * remove token from the local storage
+     *
+     */
+    [LOGOUT]({ commit }: { commit: Commit }): void {
       localStorage.removeItem("token");
-      context.commit(LOGOUT);
+      commit(LOGOUT_SUCCESS);
+    },
+
+    /**
+     * authenticate by existed token
+     *
+     */
+    async [GET_ME]({ commit }: { commit: Commit }): Promise<void> {
+      try {
+        const res = await axios.get("/me");
+        commit(AUTH_SUCCESS, res.data.data.user);
+      } catch (error) {
+        commit(LOGOUT_SUCCESS);
+      }
     },
   },
-  getters: {},
 };

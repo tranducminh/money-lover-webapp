@@ -3,7 +3,12 @@
     <div class="header">
       <n-grid x-gap="12" :cols="3">
         <n-gi>
-          <logo />
+          <n-space align="center">
+            <logo />
+            <n-tag type="info" v-if="isAuth">
+              {{ formatUserRole(userRole).toUpperCase() }}
+            </n-tag>
+          </n-space>
         </n-gi>
         <n-gi>
           <div class="green"></div>
@@ -60,6 +65,7 @@ import {
 import { useStore } from "vuex";
 import router from "@/router";
 import { LOGOUT } from "@/store/action-types";
+import { formatUserRole } from "@/utils/index";
 
 export default defineComponent({
   setup() {
@@ -67,6 +73,7 @@ export default defineComponent({
 
     const isAuth = computed(() => store.state.auth.isAuth);
     const name = computed(() => store.state.auth.name);
+    const userRole = computed(() => store.state.wallet.currentWallet?.role);
 
     const logout = () => {
       store.dispatch(LOGOUT);
@@ -76,6 +83,8 @@ export default defineComponent({
     return {
       isAuth,
       name,
+      formatUserRole,
+      userRole,
       logout,
     };
   },

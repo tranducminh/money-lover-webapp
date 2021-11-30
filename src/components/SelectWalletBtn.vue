@@ -65,7 +65,7 @@ import {
   KeyboardArrowDownFilled,
 } from "@vicons/material";
 import { useStore } from "vuex";
-import CreateWalletBtn from "./CreateWalletBtn.vue";
+import CreateWalletBtn from "./wallet/navbar/CreateWalletBtn.vue";
 import { LOAD_WALLET_PAGE, SET_CURRENT_WALLET } from "@/store/action-types";
 import { formatCurrency } from "@/utils";
 import { WALLET_LIST_TEAM_NAME } from "@/store/getter-types";

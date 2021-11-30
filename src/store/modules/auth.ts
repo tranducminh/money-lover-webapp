@@ -1,7 +1,17 @@
-import { LOGOUT_SUCCESS, PUSH_MESSAGE, AUTH_SUCCESS } from "../mutation-types";
+import {
+  PUSH_MESSAGE,
+  AUTH_SUCCESS,
+  RESET_AUTH_STATE_SUCCESS,
+} from "../mutation-types";
 import axios from "@/utils/axios";
-import { Commit } from "vuex";
-import { GET_ME, LOGIN, LOGOUT, SIGNUP } from "../action-types";
+import { Commit, Dispatch } from "vuex";
+import {
+  GET_ME,
+  LOGIN,
+  LOGOUT,
+  RESET_ROOT_STATE,
+  SIGNUP,
+} from "../action-types";
 import { MessageType } from "@/constants";
 
 export interface IAuthState {
@@ -46,8 +56,11 @@ export const auth = {
       state.id = _data.id;
       state.email = _data.email;
     },
-    [LOGOUT_SUCCESS](state: IAuthState): void {
-      state = { ...initialAuthState };
+    [RESET_AUTH_STATE_SUCCESS](state: IAuthState): void {
+      state.isAuth = false;
+      state.name = null;
+      state.id = null;
+      state.email = null;
     },
   },
   actions: {
@@ -107,21 +120,27 @@ export const auth = {
      * remove token from the local storage
      *
      */
-    [LOGOUT]({ commit }: { commit: Commit }): void {
+    [LOGOUT]({ dispatch }: { dispatch: Dispatch }): void {
       localStorage.removeItem("token");
-      commit(LOGOUT_SUCCESS);
+      dispatch(RESET_ROOT_STATE);
     },
 
     /**
      * authenticate by existed token
      *
      */
-    async [GET_ME]({ commit }: { commit: Commit }): Promise<void> {
+    async [GET_ME]({
+      commit,
+      dispatch,
+    }: {
+      commit: Commit;
+      dispatch: Dispatch;
+    }): Promise<void> {
       try {
         const res = await axios.get("/me");
         commit(AUTH_SUCCESS, res.data.data.user);
       } catch (error) {
-        commit(LOGOUT_SUCCESS);
+        dispatch(RESET_ROOT_STATE);
       }
     },
   },

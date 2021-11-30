@@ -1,5 +1,5 @@
 import { MessageType } from "@/constants";
-import { PUSH_MESSAGE } from "../mutation-types";
+import { PUSH_MESSAGE, RESET_MESSAGE_STATE_SUCCESS } from "../mutation-types";
 
 export interface IMessageState {
   type: MessageType | null;
@@ -26,6 +26,11 @@ export const message = {
       state.content = _data.content;
       state.id = new Date().getTime();
       state.type = _data.type;
+    },
+    [RESET_MESSAGE_STATE_SUCCESS](state: IMessageState): void {
+      state.id = null;
+      state.content = null;
+      state.type = null;
     },
   },
 };

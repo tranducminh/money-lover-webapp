@@ -28,3 +28,9 @@ export const UPDATE_WALLET_TAB = "UPDATE_WALLET_TAB";
 export const CREATE_TEAM = "CREATE_TEAM";
 export const UPDATE_TEAM = "UPDATE_TEAM";
 export const GET_ALL_TEAM = "GET_ALL_TEAM";
+
+export const GET_ALL_MEMBER = "GET_ALL_MEMBER";
+export const CREATE_MEMBER = "CREATE_MEMBER";
+export const DELETE_MEMBER = "DELETE_MEMBER";
+
+export const RESET_ROOT_STATE = "RESET_ROOT_STATE";

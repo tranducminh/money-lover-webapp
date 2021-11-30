@@ -13,9 +13,19 @@ import {
   initialCategoryState,
 } from "./modules/category";
 import { WalletTab } from "@/constants";
-import { UPDATE_WALLET_TAB } from "./action-types";
-import { UPDATE_WALLET_TAB_SUCCESS } from "./mutation-types";
+import { RESET_ROOT_STATE, UPDATE_WALLET_TAB } from "./action-types";
 import { initialTeamState, ITeamState, team } from "./modules/team";
+import {
+  RESET_AUTH_STATE_SUCCESS,
+  RESET_CATEGORY_STATE_SUCCESS,
+  RESET_MEMBER_STATE_SUCCESS,
+  RESET_MESSAGE_STATE_SUCCESS,
+  RESET_TEAM_STATE_SUCCESS,
+  RESET_TRANSACTION_STATE_SUCCESS,
+  RESET_WALLET_STATE_SUCCESS,
+  UPDATE_WALLET_TAB_SUCCESS,
+} from "./mutation-types";
+import { IMemberState, initialMemberState, member } from "./modules/member";
 
 export interface RootState {
   auth: IAuthState;
@@ -25,6 +35,7 @@ export interface RootState {
   category: ICategoryState;
   walletTab: WalletTab;
   team: ITeamState;
+  member: IMemberState;
 }
 
 export default createStore({
@@ -36,6 +47,7 @@ export default createStore({
     category: initialCategoryState,
     walletTab: WalletTab.TRANSACTION,
     team: initialTeamState,
+    member: initialMemberState,
   },
   mutations: {
     [UPDATE_WALLET_TAB_SUCCESS](state: RootState, tab: WalletTab): void {
@@ -43,6 +55,15 @@ export default createStore({
     },
   },
   actions: {
+    [RESET_ROOT_STATE]({ commit }: { commit: Commit }): void {
+      commit(RESET_AUTH_STATE_SUCCESS);
+      commit(RESET_CATEGORY_STATE_SUCCESS);
+      commit(RESET_MEMBER_STATE_SUCCESS);
+      commit(RESET_MESSAGE_STATE_SUCCESS);
+      commit(RESET_TEAM_STATE_SUCCESS);
+      commit(RESET_TRANSACTION_STATE_SUCCESS);
+      commit(RESET_WALLET_STATE_SUCCESS);
+    },
     [UPDATE_WALLET_TAB]({ commit }: { commit: Commit }, tab: WalletTab): void {
       commit(UPDATE_WALLET_TAB_SUCCESS, tab);
     },
@@ -55,5 +76,6 @@ export default createStore({
     transaction,
     category,
     team,
+    member,
   },
 });

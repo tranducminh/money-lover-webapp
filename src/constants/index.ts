@@ -16,5 +16,11 @@ export enum MessageType {
 
 export enum WalletTab {
   TRANSACTION = "transaction",
-  MEMBERS = "members",
+  MEMBER = "member",
+}
+
+export enum UserRole {
+  OWNER = 0,
+  MANAGER = 1,
+  OBSERVER = 2,
 }

@@ -60,7 +60,7 @@ const menuOptions = [
   {
     label: "Reports",
     key: "reports",
-    // href: "",
+    href: "/reports",
   },
   {
     label: "Account",

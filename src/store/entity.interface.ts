@@ -59,3 +59,9 @@ export interface ITeam {
     email: string;
   };
 }
+export interface IMember {
+  id: number;
+  email: string;
+  name: string;
+  role: string;
+}

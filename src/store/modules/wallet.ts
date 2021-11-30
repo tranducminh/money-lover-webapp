@@ -7,6 +7,7 @@ import {
   DELETE_WALLET,
   FREEZE_WALLET,
   GET_ALL_CATEGORY,
+  GET_ALL_MEMBER,
   GET_ALL_TRANSACTION,
   GET_ALL_WALLET,
   LOAD_WALLET_PAGE,
@@ -19,16 +20,18 @@ import { WALLET_LIST_TEAM_NAME } from "../getter-types";
 import {
   GET_ALL_WALLET_SUCCESS,
   PUSH_MESSAGE,
+  RESET_WALLET_STATE_SUCCESS,
   SET_CURRENT_WALLET_SUCCESS,
 } from "../mutation-types";
 
 export interface IWalletState {
   list: IWallet[];
-  currentWallet?: IWallet;
+  currentWallet: IWallet | null;
 }
 
 export const initialWalletState = {
   list: [],
+  currentWallet: null,
 };
 
 // <----payload---->
@@ -52,6 +55,11 @@ export const wallet = {
 
     [SET_CURRENT_WALLET_SUCCESS](state: IWalletState, _data: IWallet): void {
       state.currentWallet = { ..._data };
+    },
+
+    [RESET_WALLET_STATE_SUCCESS](state: IWalletState): void {
+      state.list = [];
+      state.currentWallet = null;
     },
   },
   actions: {
@@ -95,6 +103,7 @@ export const wallet = {
         commit(SET_CURRENT_WALLET_SUCCESS, currentWallet);
         dispatch(GET_ALL_TRANSACTION);
         dispatch(GET_ALL_CATEGORY);
+        dispatch(GET_ALL_MEMBER);
       }
     },
 

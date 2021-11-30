@@ -1,8 +1,10 @@
 import { Commit } from "vuex";
-import { RootState } from "..";
 import { GET_ALL_TEAM } from "../action-types";
 import { IOption, ITeam } from "../entity.interface";
-import { GET_ALL_TEAM_SUCCESS } from "../mutation-types";
+import {
+  GET_ALL_TEAM_SUCCESS,
+  RESET_TEAM_STATE_SUCCESS,
+} from "../mutation-types";
 import axios from "@/utils/axios";
 import { TEAM_LIST_BY_OPTION } from "../getter-types";
 
@@ -19,6 +21,9 @@ export const team = {
   mutations: {
     [GET_ALL_TEAM_SUCCESS](state: ITeamState, _data: ITeam[]): void {
       state.list = [..._data];
+    },
+    [RESET_TEAM_STATE_SUCCESS](state: ITeamState): void {
+      state.list = [];
     },
   },
   actions: {

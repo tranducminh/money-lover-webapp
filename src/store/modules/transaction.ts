@@ -10,6 +10,7 @@ import {
 import {
   GET_ALL_TRANSACTION_SUCCESS,
   PUSH_MESSAGE,
+  RESET_TRANSACTION_STATE_SUCCESS,
   SET_CURRENT_TRANSACTION_SUCCESS,
   SET_TRANSACTION_FILTER,
 } from "../mutation-types";
@@ -83,6 +84,15 @@ export const transaction = {
       _data: ITransaction
     ): void {
       state.currentTransaction = { ..._data };
+    },
+
+    [RESET_TRANSACTION_STATE_SUCCESS](state: ITransactionState): void {
+      delete state.currentTransaction;
+      state.list = [];
+      state.filter = {
+        year: new Date().getFullYear(),
+        month: new Date().getMonth() + 1,
+      };
     },
   },
   actions: {

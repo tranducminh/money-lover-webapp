@@ -3,7 +3,10 @@ import { GET_ALL_CATEGORY } from "../action-types";
 import { ICategory, IOption } from "../entity.interface";
 import axios from "@/utils/axios";
 import { RootState } from "..";
-import { GET_ALL_CATEGORY_SUCCESS } from "../mutation-types";
+import {
+  GET_ALL_CATEGORY_SUCCESS,
+  RESET_CATEGORY_STATE_SUCCESS,
+} from "../mutation-types";
 import { CATEGORY_LIST_BY_OPTION } from "../getter-types";
 
 export interface ICategoryState {
@@ -22,6 +25,9 @@ export const category = {
       _data: ICategory[]
     ): void {
       state.list = [..._data];
+    },
+    [RESET_CATEGORY_STATE_SUCCESS](state: ICategoryState): void {
+      state.list = [];
     },
   },
   actions: {

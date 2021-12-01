@@ -34,3 +34,6 @@ export const CREATE_MEMBER = "CREATE_MEMBER";
 export const DELETE_MEMBER = "DELETE_MEMBER";
 
 export const RESET_ROOT_STATE = "RESET_ROOT_STATE";
+
+export const LOAD_REPORT_PAGE = "LOAD_REPORT_PAGE";
+export const GET_REPORT = "GET_REPORT";

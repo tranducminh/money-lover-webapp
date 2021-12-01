@@ -22,6 +22,12 @@ export interface ITransactionByDate {
   }[];
 }
 
+export interface ITransactionForReport {
+  inflow: number;
+  outflow: number;
+  date: string;
+}
+
 export interface IWallet {
   id: number;
   name: string;

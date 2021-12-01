@@ -66,7 +66,11 @@ import {
 } from "@vicons/material";
 import { useStore } from "vuex";
 import CreateWalletBtn from "./wallet/navbar/CreateWalletBtn.vue";
-import { LOAD_WALLET_PAGE, SET_CURRENT_WALLET } from "@/store/action-types";
+import {
+  LOAD_REPORT_PAGE,
+  LOAD_WALLET_PAGE,
+  SET_CURRENT_WALLET,
+} from "@/store/action-types";
 import { formatCurrency } from "@/utils";
 import { WALLET_LIST_TEAM_NAME } from "@/store/getter-types";
 
@@ -93,6 +97,7 @@ export default defineComponent({
     const onSelectWallet = (walletId: number) => {
       store.dispatch(SET_CURRENT_WALLET, walletId);
       store.dispatch(LOAD_WALLET_PAGE);
+      store.dispatch(LOAD_REPORT_PAGE);
       active.value = false;
     };
 

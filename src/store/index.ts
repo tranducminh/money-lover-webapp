@@ -20,12 +20,14 @@ import {
   RESET_CATEGORY_STATE_SUCCESS,
   RESET_MEMBER_STATE_SUCCESS,
   RESET_MESSAGE_STATE_SUCCESS,
+  RESET_REPORT_STATE_SUCCESS,
   RESET_TEAM_STATE_SUCCESS,
   RESET_TRANSACTION_STATE_SUCCESS,
   RESET_WALLET_STATE_SUCCESS,
   UPDATE_WALLET_TAB_SUCCESS,
 } from "./mutation-types";
 import { IMemberState, initialMemberState, member } from "./modules/member";
+import { initialReportState, IReportState, report } from "./modules/report";
 
 export interface RootState {
   auth: IAuthState;
@@ -36,6 +38,7 @@ export interface RootState {
   walletTab: WalletTab;
   team: ITeamState;
   member: IMemberState;
+  report: IReportState;
 }
 
 export default createStore({
@@ -48,6 +51,7 @@ export default createStore({
     walletTab: WalletTab.TRANSACTION,
     team: initialTeamState,
     member: initialMemberState,
+    report: initialReportState,
   },
   mutations: {
     [UPDATE_WALLET_TAB_SUCCESS](state: RootState, tab: WalletTab): void {
@@ -63,6 +67,7 @@ export default createStore({
       commit(RESET_TEAM_STATE_SUCCESS);
       commit(RESET_TRANSACTION_STATE_SUCCESS);
       commit(RESET_WALLET_STATE_SUCCESS);
+      commit(RESET_REPORT_STATE_SUCCESS);
     },
     [UPDATE_WALLET_TAB]({ commit }: { commit: Commit }, tab: WalletTab): void {
       commit(UPDATE_WALLET_TAB_SUCCESS, tab);
@@ -77,5 +82,6 @@ export default createStore({
     category,
     team,
     member,
+    report,
   },
 });

@@ -8,7 +8,13 @@ instance.interceptors.request.use(
   (config: any) => {
     const token = localStorage.getItem("token");
     config.headers["Content-Type"] = "application/json";
-    config.headers["Accept"] = "application/json";
+
+    const regex = /\/wallets\/[0-9]{2}\/reports\?year=[0-9]{4}/g;
+    if (!regex.test(config.url)) {
+      config.headers["Accept"] = "application/json";
+    } else {
+      delete config.headers.common.Accept;
+    }
     if (token) {
       config.headers["Authorization"] = token;
     }

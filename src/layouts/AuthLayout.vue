@@ -62,11 +62,6 @@ const menuOptions = [
     key: "reports",
     href: "/reports",
   },
-  {
-    label: "Account",
-    key: "account",
-    // href: "",
-  },
 ] as Option[];
 
 export default defineComponent({

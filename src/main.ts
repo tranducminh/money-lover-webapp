@@ -36,6 +36,7 @@ import {
   NDataTable,
   NTag,
   NDropdown,
+  NDivider,
 } from "naive-ui";
 import "vfonts/Lato.css";
 
@@ -73,6 +74,7 @@ const naive = create({
     NDataTable,
     NTag,
     NDropdown,
+    NDivider,
   ],
 });
 

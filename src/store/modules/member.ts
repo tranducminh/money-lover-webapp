@@ -73,7 +73,6 @@ export const member = {
       payload: ICreateMemberPayload
     ): Promise<void> {
       try {
-        debugger;
         await axios.post(
           `/wallets/${rootState.wallet.currentWallet?.id}/members`,
           payload
@@ -85,7 +84,6 @@ export const member = {
         });
       } catch (error: any) {
         const message = error.response.data.data?.message;
-        debugger;
         commit(PUSH_MESSAGE, {
           type: MessageType.ERROR,
           content: message,

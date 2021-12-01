@@ -18,8 +18,15 @@ import axios from "@/utils/axios";
 import { RootState } from "..";
 import { CategoryType, MessageType } from "@/constants";
 import { chain } from "lodash";
-import { TRANSACTION_LIST_BY_DATE } from "../getter-types";
-import { ITransaction, ITransactionByDate } from "../entity.interface";
+import {
+  TRANSACTION_LIST_BY_DATE,
+  TRANSACTION_LIST_FOR_REPORT,
+} from "../getter-types";
+import {
+  ITransaction,
+  ITransactionByDate,
+  ITransactionForReport,
+} from "../entity.interface";
 import { formatDate } from "@/utils";
 
 export interface ITransactionState {
@@ -286,6 +293,43 @@ export const transaction = {
         outflow,
         transactions,
       };
+    },
+    [TRANSACTION_LIST_FOR_REPORT](
+      state: ITransactionState
+    ): ITransactionForReport[] {
+      state.list.forEach((transaction) => {
+        transaction.date = formatDate(transaction.date);
+      });
+      return chain(state.list)
+        .groupBy("date")
+        .map((items: ITransaction[], key: string) => {
+          let inflow = 0;
+          let outflow = 0;
+          items.forEach((item) => {
+            switch (item.category.main_type) {
+              case CategoryType.EXPENSE:
+              case CategoryType.BACK_DEBT:
+              case CategoryType.LOAN:
+                outflow += item.amount;
+                break;
+
+              case CategoryType.INCOME:
+              case CategoryType.DEBT:
+              case CategoryType.RECOVER_DEBT:
+                inflow += item.amount;
+                break;
+
+              default:
+                break;
+            }
+          });
+          return {
+            date: key,
+            inflow,
+            outflow,
+          };
+        })
+        .value();
     },
   },
 };

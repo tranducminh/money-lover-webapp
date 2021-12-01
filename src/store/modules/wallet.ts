@@ -63,9 +63,28 @@ export const wallet = {
     },
   },
   actions: {
-    async [GET_ALL_WALLET]({ commit }: { commit: Commit }): Promise<void> {
+    /**
+     * get all wallet and update current wallet
+     *
+     */
+    async [GET_ALL_WALLET]({
+      commit,
+      state,
+    }: {
+      commit: Commit;
+      state: IWalletState;
+    }): Promise<void> {
       const res = await axios.get("/wallets");
       commit(GET_ALL_WALLET_SUCCESS, res.data.data.wallets);
+
+      if (res.data.data.wallets.length > 0) {
+        const currentWallet = state.currentWallet?.id
+          ? res.data.data.wallets.find(
+              (wallet: IWallet) => wallet.id == state.currentWallet?.id
+            )
+          : res.data.data.wallets[0];
+        commit(SET_CURRENT_WALLET_SUCCESS, currentWallet);
+      }
     },
 
     [SET_CURRENT_WALLET](
@@ -83,28 +102,14 @@ export const wallet = {
      *
      */
     async [LOAD_WALLET_PAGE]({
-      state,
-      commit,
       dispatch,
     }: {
-      state: IWalletState;
-      commit: Commit;
       dispatch: Dispatch;
     }): Promise<void> {
-      const res = await axios.get("/wallets");
-      commit(GET_ALL_WALLET_SUCCESS, res.data.data.wallets);
-
-      if (res.data.data.wallets.length > 0) {
-        const currentWallet = state.currentWallet?.id
-          ? res.data.data.wallets.find(
-              (wallet: IWallet) => wallet.id == state.currentWallet?.id
-            )
-          : res.data.data.wallets[0];
-        commit(SET_CURRENT_WALLET_SUCCESS, currentWallet);
-        dispatch(GET_ALL_TRANSACTION);
-        dispatch(GET_ALL_CATEGORY);
-        dispatch(GET_ALL_MEMBER);
-      }
+      await dispatch(GET_ALL_WALLET);
+      dispatch(GET_ALL_TRANSACTION);
+      dispatch(GET_ALL_CATEGORY);
+      dispatch(GET_ALL_MEMBER);
     },
 
     /**
